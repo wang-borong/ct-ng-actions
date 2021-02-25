@@ -56,7 +56,7 @@ jobs:
             cp ct-ng-actions/build-x-tools.sh crosstool-ng-1.24.0
             cd crosstool-ng-1.24.0
             chmod +x build-x-tools.sh
-            ./build-x-tools.sh
+            ./build-x-tools.sh crosstool-ng-1.24.0
 
       - name: Pack
         run: |
