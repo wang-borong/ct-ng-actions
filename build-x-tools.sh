@@ -2,5 +2,5 @@
 
 for config in /x-tools-build/ct-ng-actions/configs/*.config; do
     cp $config .config
-    ct-ng build
+    ./ct-ng build
 done
