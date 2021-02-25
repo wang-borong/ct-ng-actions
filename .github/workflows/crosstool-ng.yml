@@ -42,7 +42,7 @@ jobs:
       - name: Build ct-ng
         run: |
             cd ${BUILDDIR}
-            wget https://github.com/crosstool-ng/crosstool-ng/archive/crosstool-ng-1.24.0.tar.gz
+            wget http://crosstool-ng.org/download/crosstool-ng/crosstool-ng-1.24.0.tar.xz
             tar xf crosstool-ng-1.24.0.tar.gz
             cd crosstool-ng-1.24.0
             ./bootstrap
