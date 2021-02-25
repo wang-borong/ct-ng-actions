@@ -1,0 +1,90 @@
+name: Build x-tools
+
+on:
+  push:
+    branches: [ master ]
+    paths: [ '.github/workflows/crosstool-ng.yml', 'packages' ]
+  schedule:
+    - cron: 0 2 * * *
+  watch:
+    types: started
+
+env:
+  TZ: Asia/Shanghai
+
+
+# Action will return to the startup working directory every run
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    if: github.event.repository.owner.id == github.event.sender.id
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Initialization environment
+        run: |
+          sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
+          sudo -E apt-get -qq update
+          sudo -E apt-get install -y gcc g++ gperf bison flex texinfo help2man make libncurses5-dev \
+                python3-dev autoconf automake libtool libtool-bin gawk wget bzip2 xz-utils unzip \
+                patch libstdc++6 git
+          sudo -E apt-get -qq autoremove --purge
+          sudo -E apt-get -qq clean
+          sudo timedatectl set-timezone "$TZ"
+
+      - name: Setup building environment
+        run: |
+            sudo -E mkdir -p /opt && sudo -E chmod 777 /opt
+            sudo mkdir -p /x-tools-build && sudo -E chmod 777 /x-tools-build
+            echo "BUILDDIR=/x-tools-build" >> $GITHUB_ENV
+            echo "XTOOLSDEST=/opt" >> $GITHUB_ENV
+      - name: Build ct-ng
+        run: |
+            cd ${BUILDDIR}
+            wget https://github.com/crosstool-ng/crosstool-ng/archive/crosstool-ng-1.24.0.tar.gz
+            tar xf crosstool-ng-1.24.0.tar.gz
+            cd crosstool-ng-1.24.0
+            ./bootstrap
+            ./configure --enable-local
+            make -j$(nproc)
+
+      - name: Build x-tools
+        run: |
+            cd ${BUILDDIR}
+            git clone https://github.com/wbrn/ct-ng-actions
+            cp ct-ng-actions/build-x-tools.sh crosstool-ng-1.24.0
+            cd crosstool-ng-1.24.0
+            chmod +x build-x-tools.sh
+            ./build-x-tools.sh
+
+      - name: Pack
+        run: |
+          cd ${XTOOLSDEST}
+          tar Jcf x-tools.tar.xz x-tools
+          echo "PACKAGE=${XTOOLSDEST}/x-tools.tar.xz" >> $GITHUB_ENV
+
+      - name: Upload package
+        uses: actions/upload-artifact@master
+        with:
+          name: x-tools
+          path: ${{env.PACKAGE}}
+
+      - name: Generate release tag
+        id: tag
+        run: |
+          echo "::set-output name=release_tag::$(date +"%Y.%m.%d")"
+          touch release.txt
+          echo "* x-tools for Ubuntu$(lsb_release -s -r)" >> release.txt
+          echo "::set-output name=status::success"
+
+      - name: Upload package to release
+        id: release
+        uses: softprops/action-gh-release@v1
+        if: steps.tag.outputs.status == 'success' && !cancelled()
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        with:
+          tag_name: ${{steps.tag.outputs.release_tag}}
+          body_path: release.txt
+          files: ${{env.PACKAGE}}
