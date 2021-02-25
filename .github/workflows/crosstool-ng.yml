@@ -2,7 +2,7 @@ name: Build x-tools
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
     paths: [ '.github/workflows/crosstool-ng.yml' ]
   schedule:
     - cron: 0 2 * * *
