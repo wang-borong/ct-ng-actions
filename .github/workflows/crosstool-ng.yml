@@ -43,7 +43,7 @@ jobs:
         run: |
             cd ${BUILDDIR}
             wget http://crosstool-ng.org/download/crosstool-ng/crosstool-ng-1.24.0.tar.xz
-            tar xf crosstool-ng-1.24.0.tar.gz
+            tar xf crosstool-ng-1.24.0.tar.xz
             cd crosstool-ng-1.24.0
             ./bootstrap
             ./configure --enable-local
