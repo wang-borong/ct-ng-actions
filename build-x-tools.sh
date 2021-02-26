@@ -8,4 +8,8 @@ for config in /x-tools-build/ct-ng-actions/configs/${ct_ng_package}/*.config; do
 done
 
 # to be compatible with default target path
-[[ -d $HOME/x-tools ]] && mv -f $HOME/x-tools/* /opt/x-tools
+if [[ -d $HOME/x-tools ]]; then
+    mv -f $HOME/x-tools/* /opt/x-tools
+fi
+
+exit 0
