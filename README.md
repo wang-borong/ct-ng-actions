@@ -4,6 +4,9 @@ crosstool-ng actions to build x-tools
 
 Building x-tools are:
 
-* arm-linux-musleabihf
+* arm-linux-musleabihf for context-a7 neon-vfpv4 arm soc
 * riscv32-elf
 * riscv64-elf
+* riscv64gc-linux-gnu
+* aarch64-rpi3-linux-gnu
+* aarch64-linux-android
