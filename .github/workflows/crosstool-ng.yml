@@ -16,6 +16,7 @@ env:
 # Action will return to the startup working directory every run
 jobs:
   build:
+    timeout-minutes: 720
     runs-on: ubuntu-latest
     if: github.event.repository.owner.id == github.event.sender.id
 
