@@ -43,9 +43,8 @@ jobs:
       - name: Build ct-ng
         run: |
             cd ${BUILDDIR}
-            wget http://crosstool-ng.org/download/crosstool-ng/crosstool-ng-1.24.0.tar.xz
-            tar xf crosstool-ng-1.24.0.tar.xz
-            cd crosstool-ng-1.24.0
+            git clone https://github.com/crosstool-ng/crosstool-ng.git
+            cd crosstool-ng
             ./bootstrap
             ./configure --enable-local
             make -j$(nproc)
@@ -54,10 +53,10 @@ jobs:
         run: |
             cd ${BUILDDIR}
             git clone https://github.com/wbrn/ct-ng-actions
-            cp ct-ng-actions/build-x-tools.sh crosstool-ng-1.24.0
-            cd crosstool-ng-1.24.0
+            cp ct-ng-actions/build-x-tools.sh crosstool-ng
+            cd crosstool-ng
             chmod +x build-x-tools.sh
-            ./build-x-tools.sh crosstool-ng-1.24.0
+            ./build-x-tools.sh crosstool-ng
 
       - name: Pack
         run: |
