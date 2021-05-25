@@ -7,7 +7,7 @@ for config in /x-tools-build/ct-ng-actions/configs/${ct_ng_package}/*.config; do
     ./ct-ng build
     if [[ $? != 0 ]]; then
         echo "build $config failed!"
-        break
+        continue
     fi
 done
 
