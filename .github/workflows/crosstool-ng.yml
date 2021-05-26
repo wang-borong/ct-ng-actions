@@ -71,7 +71,7 @@ jobs:
         uses: actions/upload-artifact@master
         with:
           name: x-tools
-          path: ${{env.PACKAGE}}
+          path: /opt/x-tools
 
       - name: Generate release tag
         id: tag
