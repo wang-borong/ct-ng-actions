@@ -65,13 +65,15 @@ jobs:
             tar Jcf ../${tool}.tar.xz ${tool}
             echo "* ${tool} for Ubuntu-$(lsb_release -s -r)" >> ${XTOOLSDEST}/release.txt
           done
+          cd ..
+          tar Jcf x-tools.tar.xz x-tools
           echo "PACKAGE=$(echo ${XTOOLSDEST}/*.tar.xz)" >> $GITHUB_ENV
 
       - name: Upload package
         uses: actions/upload-artifact@master
         with:
           name: x-tools
-          path: /opt/x-tools
+          path: /opt/x-tools.tar.xz
 
       - name: Generate release tag
         id: tag
